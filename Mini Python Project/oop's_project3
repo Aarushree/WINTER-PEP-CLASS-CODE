@@ -1,0 +1,50 @@
+'''Design a console based library management system 
+a library item is the base(abstract) idea book and magazine are different type of items borrowing rules behave diff for each of them
+a libraryApp controles items(HAS-A)
+use oops concepts and return value, not only print'''
+#==============================================library management system =======================
+class LibraryItem:         #Abstraction
+    def __init__(self, title, copies):
+        self.title = title
+        self._copies = copies   # Encapsulation
+    def borrow_item(self):
+        pass
+#inhertiance is used book is child class and 
+class Book(LibraryItem):
+    def borrow_item(self):
+        #encapsulation is use for protected class
+        if self._copies >= 0:
+            self._copies -= 1
+            return "Book borrowed"
+        return "Book not available"
+#inhertiance is used as magine  is child class and libraray is parent class
+class Magazine(LibraryItem):
+    def borrow_item(self):
+        if self._copies > 1:    
+            self._copies -= 1
+            return "Magazine borrowed"
+        return "Magazine cannot be borrowed"
+
+class LibraryApp:
+    def __init__(self):
+        self.item = None
+
+    def create_item(self, item_type):
+        if item_type == "Book":
+            self.item = Book("Python Book", 2)
+        else:
+            self.item = Magazine("Tech Magazine", 1)
+        return "Item Created"
+
+    def borrow(self):
+        return self.item.borrow_item()
+
+
+
+app = LibraryApp()
+print(app.create_item("Book"))
+print("Borrow Status:", app.borrow())
+
+app2 = LibraryApp()
+print(app2.create_item("Magazine"))
+print("Borrow Status:", app2.borrow())
