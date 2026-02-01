@@ -1,0 +1,16 @@
+# file=open("movies.txt","w")
+# file.write("persuit of happiness\n")
+# file.write("inception\n")
+# file.write("kgf\n")
+# file.close()
+file=open("movies.txt","r")
+data=file.read()
+#print(data[:10])
+#print(data.replace("  ",""))
+#file.close()
+words=data.split()
+print(words[::-1])
+
+for w in words:
+    print(w[::-1])
+file.close()
