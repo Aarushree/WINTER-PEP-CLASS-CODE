@@ -1,0 +1,547 @@
+
+FINTRACK PRO – CLI FINANCE MANAGER
+Project Documentation
+
+1. Introduction
+FinTrack Pro is a command line based personal finance management system developed using Python, SQLite and SQLAlchemy ORM. 
+The project helps users to manage daily expenses, track subscriptions, search records, maintain monthly budgets and generate analytics using raw SQL queries.
+
+2. Objectives
+• To understand ORM based database interaction  
+• To use SQLite with Python  
+• To implement CRUD operations  
+• To write raw SQL for analytics  
+• To design modular architecture  
+• To build interview oriented project
+
+3. Technologies Used
+• Python  
+• SQLite Database  
+• SQLAlchemy ORM  
+• Raw SQL Queries  
+• CLI Interface
+
+4. System Features
+• Add Expense  
+• Update Expense  
+• Delete Expense  
+• Search by Date  
+• Category Analytics  
+• Monthly Budget Alert  
+• Persistent Storage
+
+5. Database Design
+
+Tables:
+1. categories(id, name)  
+2. expenses(id, title, amount, date, category_id)  
+3. subscriptions(id, name, amount, next_date)  
+4. budgets(id, month, limit)
+
+Relationships:
+Category 1 ---- N Expenses
+
+6. Modules Description
+
+a) Expense Module
+- Add new expense  
+- Update existing expense  
+- Delete expense  
+- ORM based operations
+
+b) Report Module
+- Category wise total  
+- Aggregation using GROUP BY  
+- Raw SQL joins
+
+c) Budget Module
+- Set monthly limit  
+- Compare with spending  
+- Alert when exceeded
+
+d) Search Module
+- Find expenses by date using SQL query
+
+7. Sample SQL Used
+
+SELECT c.name, SUM(e.amount)
+FROM categories c
+JOIN expenses e
+ON c.id = e.category_id
+GROUP BY c.name;
+
+8. Learning Outcomes
+• ORM concepts  
+• SQL joins & aggregation  
+• Modular programming  
+• Exception handling  
+• CLI application design
+
+9. Future Enhancements
+• CSV Export  
+• Flask UI  
+• Authentication  
+• Charts integration
+
+10. Conclusion
+This project demonstrates practical use of Python with databases and SQL. 
+It is suitable for resume showcase and interview explanation.
+
+
+
+
+💰 FINTRACK PRO – CLI Finance Manager
+
+FinTrack Pro is a command-line based personal finance management system developed using Python, SQLite, and SQLAlchemy ORM.
+The project helps users record daily expenses, organize spending by category, monitor monthly budgets, and generate analytical reports using both ORM-based queries and raw SQL.
+It is designed as a learning-focused yet practical project, suitable for academic evaluation, interviews, and resume showcase.
+
+📌 Features
+
+Add, update, and delete expenses
+
+Create and manage expense categories
+
+Search expenses by date
+
+Generate category-wise spending reports
+
+Set monthly budget limits
+
+Get alerts when budget limits are exceeded
+
+Persistent data storage using SQLite
+
+Menu-driven CLI interface
+
+🎯 Project Objectives
+
+Understand ORM-based database interaction
+
+Work with SQLite database using Python
+
+Implement full CRUD operations
+
+Combine SQLAlchemy ORM with raw SQL queries
+
+Design a modular and maintainable CLI application
+
+Build an interview-oriented real-world project
+
+🛠 Technologies Used
+
+Python
+
+SQLite Database
+
+SQLAlchemy ORM
+
+Raw SQL Queries
+
+Command Line Interface (CLI)
+
+🗂 Project Structure
+fintrack_pro/
+│
+├── fintrack.py        # Main application file
+├── fintrack.db        # SQLite database (auto-generated)
+├── README.md          # Project documentation
+
+🧱 Database Design
+Tables
+
+categories
+
+id (Primary Key)
+
+name (Unique)
+
+expenses
+
+id (Primary Key)
+
+title
+
+amount
+
+date
+
+category_id (Foreign Key)
+
+budgets
+
+id (Primary Key)
+
+month (Unique – YYYY-MM)
+
+limit
+
+Relationships
+
+One-to-Many Relationship
+
+One Category can have multiple Expenses
+
+⚙️ How the Code Works
+Database Connection
+
+SQLAlchemy engine connects Python to the SQLite database
+
+declarative_base() is used to define ORM models
+
+sessionmaker() manages database sessions for queries and transactions
+
+ORM Models
+
+Category Model stores expense categories and maintains relationship with expenses
+
+Expense Model stores individual expense records linked to categories
+
+Budget Model stores monthly spending limits
+
+CRUD Operations
+
+Create: Add new categories, expenses, and budgets
+
+Read: Search expenses and generate reports
+
+Update: Modify existing expenses
+
+Delete: Remove expense records
+
+Reports & Analytics
+
+Uses raw SQL queries for aggregation and reporting
+
+Demonstrates JOIN, GROUP BY, and SUM operations
+
+Example:
+
+SELECT c.name, SUM(e.amount)
+FROM categories c
+JOIN expenses e
+ON c.id = e.category_id
+GROUP BY c.name;
+
+Budget Monitoring
+
+Monthly expenses are calculated using SQL
+
+Compared against stored budget limits
+
+Displays alerts when spending exceeds the limit
+
+🖥 CLI Menu Options
+1. Add category
+2. Add expense
+3. Update expense
+4. Delete expense
+5. Search by date
+6. Category report
+7. Set monthly budget
+8. Budget alert
+9. Exit
+
+🚀 How to Run the Project
+Prerequisites
+
+Python 3.x installed
+
+Install Required Package
+pip install sqlalchemy
+
+Run the Application
+python fintrack.py
+
+📚 Learning Outcomes
+
+Practical understanding of SQLAlchemy ORM
+
+Experience with database relationships
+
+Writing raw SQL within Python applications
+
+Designing menu-driven CLI systems
+
+Applying modular programming principles
+
+Handling real-world finance-related data
+
+🔮 Future Enhancements
+
+Export reports to CSV
+
+Web interface using Flask
+
+User authentication
+
+Graphical charts and dashboards
+
+Cloud database integration
+
+🧠 Why This Project Matters
+
+FinTrack Pro demonstrates the ability to:
+
+Design and manage databases
+
+Implement real-world business logic
+
+Write clean, readable, and modular Python code
+
+Combine ORM and SQL effectively
+This makes it an excellent project for academic submissions, interviews, and professional portfolios
+
+
+
+
+# Import required SQLAlchemy components
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, text
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+
+# Create SQLite database engine
+engine = create_engine("sqlite:///fintrack.db")
+
+# Base class for all ORM models
+Base = declarative_base()
+
+# Create session factory
+Session = sessionmaker(bind=engine)
+
+# Create a database session
+db = Session()
+
+
+# Category table to store expense categories
+class Category(Base):
+    __tablename__ = "categories"   # Table name in database
+
+    id = Column(Integer,primary_key=True)   # Unique category ID
+    name = Column(String, unique=True)       # Category name (must be unique)
+
+    # Relationship with Expense table
+    expenses = relationship("Expense", back_populates="category")
+
+
+# Expense table to store individual expenses
+class Expense(Base):
+    __tablename__ = "expenses"   # Table name
+
+    id = Column(Integer, primary_key=True)   # Unique expense ID
+    title = Column(String)                  # Expense title
+    amount = Column(Integer)                # Expense amount
+    date = Column(String)                   # Expense date (YYYY-MM-DD)
+    category_id = Column(Integer, ForeignKey("categories.id"))  # Linked category
+    category = relationship("Category", back_populates="expenses")   # Relationship with Category table 
+
+
+# Budget table to store monthly budget limits
+class Budget(Base):
+    __tablename__ = "budgets"   # Table name
+
+    id = Column(Integer, primary_key=True)   # Unique budget ID
+    month = Column(String, unique=True)      # Month (YYYY-MM)
+    limit = Column(Integer)                  # Spending limit for the month
+
+
+# Create all tables in the database
+Base.metadata.create_all(engine)
+
+
+# Function to add a new category
+def add_category():
+    name = input("Category: ")   # Take category name from user
+
+    # Validate input
+    if not name:
+        print("Category name required")
+        return
+
+    # Save category to database
+    db.add(Category(name=name))
+    db.commit()
+    print("Category saved")
+
+
+# Function to add a new expense
+def add_expense():
+    title = input("Title: ")              # Expense title
+    amount = input("Amount: ")            # Expense amount
+    date = input("Date (YYYY-MM-DD): ")   # Expense date
+    category_id = input("Category ID: ")  # Category ID
+
+    # Check if any field is missing
+    if not (title and amount and date and category_id):
+        print("Incomplete input")
+        return
+
+    # Save expense record
+    db.add(
+        Expense(
+            title=title,
+            amount=int(amount),
+            date=date,
+            category_id=int(category_id)
+        )
+    )
+    db.commit()
+    print("Expense recorded")
+
+
+# Function to update an existing expense
+def update_expense():
+    eid = input("Expense ID: ")   # Get expense ID
+    expense = db.query(Expense).filter_by(id=eid).first()  # Fetch expense
+
+    # Check if expense exists
+    if not expense:
+        print("Expense not found")
+        return
+
+    # Update expense details
+    expense.title = input("New title: ")
+    expense.amount = int(input("New amount: "))
+    expense.date = input("New date: ")
+
+    db.commit()
+    print("Expense updated")
+
+
+# Function to delete an expense
+def delete_expense():
+    eid = input("Expense ID: ")   # Get expense ID
+    expense = db.query(Expense).filter_by(id=eid).first()  # Fetch expense
+
+    # Check if expense exists
+    if not expense:
+        print("Expense not found")
+        return
+
+    # Delete expense
+    db.delete(expense)
+    db.commit()
+    print("Expense removed")
+
+
+# Function to search expenses by date
+def search_by_date():
+    date = input("Date (YYYY-MM-DD): ")   # Date to search
+    records = db.query(Expense).filter_by(date=date).all()  # Fetch expenses
+
+    # Check if records exist
+    if not records:
+        print("No expenses found")
+        return
+
+    # Display expenses
+    for e in records:
+        print(f"{e.title} | {e.amount}")
+
+
+# Function to show category-wise expense report
+def category_report():
+    # Raw SQL query for aggregation
+    query = """
+    SELECT c.name, SUM(e.amount)
+    FROM categories c
+    JOIN expenses e ON c.id = e.category_id
+    GROUP BY c.name
+    """
+
+    # Execute query
+    rows = db.execute(text(query)).fetchall()
+
+    # Check if data exists
+    if not rows:
+        print("No data available")
+        return
+
+    # Print category totals
+    for name, total in rows:
+        print(f"{name}: {total}")
+
+
+# Function to set monthly budget limit
+def set_limit():
+    month = input("Month (YYYY-MM): ")   # Budget month
+    limit = input("Limit: ")             # Budget limit
+
+    # Validate input
+    if not (month and limit):
+        print("Invalid input")
+        return
+
+    # Save budget
+    db.add(Budget(month=month, limit=int(limit)))
+    db.commit()
+    print("Budget saved")
+
+
+# Function to check if budget limit is exceeded
+def limit_alert():
+    month = input("Month (YYYY-MM): ")   # Month to check
+
+    # Calculate total spending for the month
+    spent = db.execute(
+        text("SELECT(SUM(amount),0) FROM expenses WHERE date LIKE :m"),
+        {"m": f"{month}%"}
+    ).scalar()
+
+    # Fetch budget for the month
+    budget = db.query(Budget).filter_by(month=month).first()
+
+    # Check if budget exists
+    if not budget:
+        print("No budget set")
+        return
+
+    # Compare spending with limit
+    if spent > budget.limit:
+        print(f"Limit exceeded: {spent}/{budget.limit}")
+    else:
+        print(f"Within limit: {spent}/{budget.limit}")
+
+
+# Display main menu
+def menu():
+    print("""
+1. Add category
+2. Add expense
+3. Update expense
+4. Delete expense
+5. Search by date
+6. Category report
+7. Set monthly budget
+8. Budget alert
+9. Exit
+""")
+
+
+# Main program loop
+while True:
+    menu()
+    choice = input("Select: ")  # User choice
+
+    if choice == "1":
+        add_category()
+    elif choice == "2":
+        add_expense()
+    elif choice == "3":
+        update_expense()
+    elif choice == "4":
+        delete_expense()
+    elif choice == "5":
+        search_by_date()
+    elif choice == "6":
+        category_report()
+    elif choice == "7":
+        set_limit()
+    elif choice == "8":
+        limit_alert()
+    elif choice == "9":
+        print("Goodbye")
+        break
+    else:
+        print("Try again")
+
+
